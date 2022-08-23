@@ -19,16 +19,16 @@ public class Main {
     @Command(name = "helloClient", mixinStandardHelpOptions = true, description = "register attendance for class.")
     static class CliClient implements Callable<Integer> {
         @Parameters(index = "0", description = "server to connect to.")
-        String server;
-
-        @Parameters(index = "1", description = "port to connect to.")
-        int port;
+        String serverPort;
 
         @Override
         public Integer call() throws Exception {
-            System.out.printf("will contact %s\n", server + ":" + port);
+            System.out.printf("wil contact %s\n", serverPort);
             var channel =
-                    ManagedChannelBuilder.forAddress(server, port).usePlaintext().build();
+                    ManagedChannelBuilder.forTarget(serverPort).usePlaintext().build();
+            System.out.println("channel" + channel);
+            System.out.println(channel.getState(true));
+            System.out.println("-----");
             var stub = HelloServiceGrpc.newBlockingStub(channel);
             var request = GrpcHello.HelloRequest.newBuilder().setName("ben").setCode("init").build();
             System.out.println(stub.hello(request));
